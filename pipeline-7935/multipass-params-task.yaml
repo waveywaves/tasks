@@ -1,0 +1,61 @@
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
+metadata:
+  name: simple-step-action
+  labels:
+    app.kubernetes.io/version: "0.1.0"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.41.0"
+    tekton.dev/categories: Build Tools
+    tekton.dev/tags: maven
+    tekton.dev/displayName: "simple-step-action"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  params:
+    - name: param1
+      type: string
+      description: >-
+        This param is required
+    - name: param2
+      description: >-
+        This param uses value of `param1` as default value
+      type: string
+      default: $(params.param1)
+
+  image: debian
+  env:
+    - name: "VAR1"
+      value: "$(params.param1)"
+    - name: "VAR2"
+      value: "$(params.param2)"
+  script: |
+    #!/bin/sh
+    set -eu
+
+    echo "Value of VAR1 is correctly substituted to [${VAR1}]"
+
+    #Value of VAR2 is going to be "$( params.param2 )"
+    echo "If param2 is not defined value of VAR2 is incorrect [${VAR2}]"
+
+---
+apiVersion: tekton.dev/v1
+kind: TaskRun
+metadata:
+  name: simple-task-run
+spec:
+  taskSpec:
+    steps:
+      - name: param-substitution-test
+        ref:
+          name: simple-step-action
+        params:
+          - name: param1
+            value: "Value for Param 1"
+      - name: param-substitution-test-2
+        ref:
+          name: simple-step-action
+        params:
+          - name: param1
+            value: "Value for Param 1"
+          - name: param2
+            value: "Value for Param 2"
