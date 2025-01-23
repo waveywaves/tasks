@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1
 kind: TaskRun
 metadata:
-  name: simple-task-run-
+  generateName: simple-task-run-
 spec:
   taskSpec:
     steps:

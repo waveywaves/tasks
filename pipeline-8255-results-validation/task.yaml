@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: collect-data
+spec:
+  results:
+    - name: resultsDir
+      type: string
+  steps:
+    - name: collect-data
+      image: quay.io/konflux-ci/release-service-utils:e633d51cd41d73e4b3310face21bb980af7a662f
+      results:
+        - name: singleComponentMode
+          type: string
+      script: |
+        #!/usr/bin/env sh
+        set -x
+        SINGLE_COMPONENT_MODE="scott"
+
+        echo -n "${SINGLE_COMPONENT_MODE}" > $(step.results.singleComponentMode.path)
+        echo -n "tom" > $(results.resultsDir.path)
+
+    - name: reduce
+      params:
+        - name: SINGLE_COMPONENT
+          value: $(steps.collect-data.results.singleComponentMode)
+      ref:
+        name: my-stepaction

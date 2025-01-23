@@ -1,0 +1,7 @@
+apiVersion: tekton.dev/v1
+kind: TaskRun
+metadata:
+  generateName: test-
+spec:
+  taskRef:
+    name: collect-data

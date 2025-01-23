@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1alpha1
 kind: StepAction
 metadata:
-  generateName: simple-step-action
+  name: simple-step-action
   labels:
     app.kubernetes.io/version: "0.1.0"
   annotations:
@@ -22,7 +22,7 @@ spec:
       type: string
       default: $(params.param1)
 
-  image: debian
+  image: debian:stable
   env:
     - name: "VAR1"
       value: "$(params.param1)"

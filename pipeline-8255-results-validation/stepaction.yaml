@@ -1,0 +1,15 @@
+apiVersion: tekton.dev/v1alpha1
+kind: StepAction
+metadata:
+  name: my-stepaction
+spec:
+  params:
+    - name: SINGLE_COMPONENT
+      type: string
+  env:
+    - name: SINGLE_COMPONENT
+      value: $(params.SINGLE_COMPONENT)
+  image: quay.io/konflux-ci/release-service-utils:e633d51cd41d73e4b3310face21bb980af7a662f
+  script: |
+    #!/usr/bin/env bash
+    echo ${SINGLE_COMPONENT}
